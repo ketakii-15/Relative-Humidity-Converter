@@ -1,25 +1,23 @@
 function convert() {
-    const humidityInput = document.getElementById('humidityInput').value;
-  
-    if (!humidityInput || isNaN(humidityInput)) {
-      alert('Please enter a valid number for Relative Humidity.');
-      return;
-    }
-  
-    const relativeHumidity = parseFloat(humidityInput);
-    const dewPoint = calculateDewPoint(relativeHumidity);
-  
-    document.getElementById('result').textContent = `Dew Point: ${dewPoint.toFixed(2)}°C`;
+  const humidityInput = document.getElementById('humidityInput').value;
+
+  if (!humidityInput || isNaN(humidityInput)) {
+    alert('Please enter a valid number for Relative Humidity.');
+    return;
   }
-  
-  function calculateDewPoint(relativeHumidity) {
-    // This is a simple approximation formula for the Dew Point calculation.
-    // For more accurate results, use more advanced equations.
-    const temperature = 25; // Replace with the actual temperature in Celsius.
-    const a = 17.27;
-    const b = 237.7;
-    const alpha = ((a * temperature) / (b + temperature)) + Math.log(relativeHumidity / 100.0);
-    const dewPoint = (b * alpha) / (a - alpha);
-    return dewPoint;
-  }
-  
+
+  const relativeHumidity = parseFloat(humidityInput);
+  const airTemperature = 25; // Replace with the actual air temperature in Celsius.
+  const dewPoint = calculateDewPoint(relativeHumidity, airTemperature);
+
+  document.getElementById('result').textContent = `Dew Point: ${dewPoint.toFixed(2)}°C`;
+}
+
+function calculateDewPoint(relativeHumidity, airTemperature) {
+  const a = 6.11;
+  const b = 237.3;
+  const alpha = (a * airTemperature) / (b + airTemperature);
+  const saturationPoint = Math.pow(10, (7.5 * airTemperature) / (237.3 + airTemperature));
+  const dewPoint = (b * (Math.log10(relativeHumidity * saturationPoint / 100.0) - alpha)) / (alpha - Math.log10(relativeHumidity * saturationPoint / 100.0));
+  return dewPoint;
+}
